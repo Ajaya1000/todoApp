@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
         brightness: Brightness.light,
-        accentColor: Colors.red ,
+        accentColor: Colors.red,
       ),
       home: LoginPage(title: 'Hello'),
     );
@@ -28,6 +28,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
   AnimationController _iconAnimationController;
   Animation<double> _iconAnimation;
@@ -119,6 +121,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         return null;
                       },
                       keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
                     ),
                     SizedBox(
                       height: 10,
@@ -136,23 +139,39 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       },
                       keyboardType: TextInputType.text,
                       obscureText: true,
+                      controller: passwordController,
                     ),
                     SizedBox(
                       height: 30,
                     ),
-                    MaterialButton(
-                      minWidth: 120.0,
-                      textColor: Colors.white,
-                      color: Colors.teal,
-                      onPressed: ()=>{
-                        if(_formkey.currentState.validate()){
-                          print("Welcome")
-                        }
-                      } ,
-                      child: Text(''
-                          'Login',
-                      ),
-                      splashColor: Colors.cyanAccent,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+
+                        MaterialButton(
+                          minWidth: 250.0,
+                          height: 40.0,
+                          textColor: Colors.white,
+                          color: Colors.teal,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0)),),
+                          onPressed: ()=>{
+                            if(_formkey.currentState.validate()){
+                              print(passwordController.text),
+                              print(emailController.text)
+                            }
+                          } ,
+                          child: Text(''
+                              'Login',
+                          ),
+                          splashColor: Colors.cyanAccent,
+                        ),
+                        FlatButton(
+                          onPressed: () => {
+                            print('hello')
+                          },child: Text('Sign Up'),
+                          textColor: Colors.blue,
+                        ),
+                      ],
                     ),
                   ],
                 ),
