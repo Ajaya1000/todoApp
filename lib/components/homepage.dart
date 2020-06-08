@@ -8,6 +8,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'My Dairy',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      drawer: Drawer(
+
+      ),
+      body: Center(
+        child: Container(
+          child: Text('Hello'),
+        ),
+      ),
+    );
   }
 }

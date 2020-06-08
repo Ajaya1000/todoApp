@@ -16,16 +16,17 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.green,
-        primarySwatch: Colors.green,
+        primaryColor: Colors.blueAccent[900],
+        primarySwatch: Colors.blue,
         brightness: Brightness.light,
         accentColor: Colors.blue[900],
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
+        '/HomePage' : (BuildContext context) => HomePage(),
         '/LoginPage':(BuildContext context) => LoginPage(),
-        '/SignupPage' : (BuildContext context) => SignupPage(),
-        '/HomePage' : (BuildContext context) => HomePage()
+        '/SignupPage' : (BuildContext context) => SignupPage()
+
       },
     );
   }

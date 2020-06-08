@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:mydairy/users/database_helpers.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LoginPage extends StatefulWidget {
 //  final String title;
@@ -13,6 +15,36 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
+
+  _login() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+
+    dynamic temp = await helper.queryUser(emailController.text);
+    if( temp==null || temp.pword !=  passwordController.text){
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error in loging in",
+        desc: "Email Id or password doesn't match",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "ok",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+    else{
+      Navigator.of(context).pushNamedAndRemoveUntil('/HomePage',(r)=> false);
+    }
+  }
+
   @override
   void initState(){
     super.initState();
@@ -83,23 +115,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         prefixIcon: Icon(Icons.email),
                       ),
                       validator: (value){
-                        if(value.isEmpty){
-                          return 'Enter your Email';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter Password',
-                        prefixIcon: Icon(Icons.vpn_key),
-                      ),
-                      validator: (value){
                         int e,c;
                         bool flag =false;
                         e=c=-1;
@@ -118,7 +133,23 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         if(value.isEmpty || flag  || e<0 || c<0 || e>c ){
                           return 'Email address format is invalid';
                         }
-
+                        return null;
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Enter Password',
+                        prefixIcon: Icon(Icons.vpn_key),
+                      ),
+                      validator: (value){
+                        if(value.isEmpty){
+                          return 'Password can not be empty';
+                        }
                         return null;
                       },
                       keyboardType: TextInputType.text,
@@ -141,8 +172,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0)),),
                             onPressed: ()=>{
                               if(_formkey.currentState.validate()){
-                                print(passwordController.text),
-                                print(emailController.text)
+                                _login()
                               }
                             } ,
                             child: Text(''
