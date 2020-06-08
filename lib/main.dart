@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import './users/user.dart';
+import 'dart:async';
+
+import 'package:mydairy/loginpages/login.dart';
+//import 'package:mydairy/transitions/slideright.dart';
+
+import 'components/homepage.dart';
+import 'loginpages/signup.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -10,176 +16,115 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primaryColor: Colors.green,
         primarySwatch: Colors.green,
         brightness: Brightness.light,
-        accentColor: Colors.red,
+        accentColor: Colors.blue[900],
       ),
-      home: LoginPage(title: 'Hello'),
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/LoginPage':(BuildContext context) => LoginPage(),
+        '/SignupPage' : (BuildContext context) => SignupPage(),
+        '/HomePage' : (BuildContext context) => HomePage()
+      },
     );
   }
 }
-
-class LoginPage extends StatefulWidget {
-  final String title;
-  LoginPage({ this.title}) ;
-
+class SplashScreen extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  final passwordController = TextEditingController();
-  final emailController = TextEditingController();
-  final _formkey = GlobalKey<FormState>();
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   AnimationController _iconAnimationController;
   Animation<double> _iconAnimation;
+
+  startTime() async {
+    var _duration =  Duration(seconds: 4);
+    return Timer(_duration, navigationPage);
+  }
+  void navigationPage() {
+    Navigator.of(context).pushReplacement(_createRoute());
+  }
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => next(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+  Widget next(){
+      return LoginPage();
+  }
+  //init state
+
   @override
   void initState(){
-    super.initState();
     _iconAnimationController = new AnimationController(
       vsync: this,
       duration: new Duration(seconds: 2),
     );
     _iconAnimation = new CurvedAnimation(
         parent: _iconAnimationController,
-        curve: Curves.fastOutSlowIn
+        curve: Curves.linear
     );
     _iconAnimation.addListener(()=> this.setState((){
 
     }));
     _iconAnimationController.forward();
+    super.initState();
+    startTime();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(40.0),
+      //backgroundColor: Color.,
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            FlutterLogo(
-              size: (_iconAnimation.value) * 130,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Form(
-              key: _formkey,
-              child: Theme(
-                data: ThemeData(
-//                  brightness: Brightness.da,
-//                  primarySwatch: Colors.red,
-                  inputDecorationTheme: InputDecorationTheme(
-                    labelStyle: TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 20.0,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                     // gapPadding: 50,
-                      borderSide: BorderSide(
-                        color: Colors.indigoAccent,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                     // gapPadding: 50,
-                      borderSide: BorderSide(
-                        color: Colors.teal,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      // gapPadding: 50,
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-
-                    ),
-                    focusedErrorBorder:OutlineInputBorder(
-                        // gapPadding: 50,
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                  ),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter Email',
-                        prefixIcon: Icon(Icons.email),
-                      ),
-                      validator: (value){
-                        if(value.isEmpty){
-                          return 'Enter your Email';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter Password',
-                        prefixIcon: Icon(Icons.lock),
-                      ),
-                      validator: (value){
-                        if(value.isEmpty){
-                          return 'password cannot be empty';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.text,
-                      obscureText: true,
-                      controller: passwordController,
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-
-                        MaterialButton(
-                          minWidth: 250.0,
-                          height: 40.0,
-                          textColor: Colors.white,
-                          color: Colors.teal,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0)),),
-                          onPressed: ()=>{
-                            if(_formkey.currentState.validate()){
-                              print(passwordController.text),
-                              print(emailController.text)
-                            }
-                          } ,
-                          child: Text(''
-                              'Login',
-                          ),
-                          splashColor: Colors.cyanAccent,
-                        ),
-                        FlatButton(
-                          onPressed: () => {
-                            print('hello')
-                          },child: Text('Sign Up'),
-                          textColor: Colors.blue,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+            Expanded(
+              flex: 2,
+              child: FlutterLogo(
+                size: (_iconAnimation.value)*130,
               ),
-            )
+            ),
+           Expanded(
+             flex: 1,
+             child: Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: <Widget>[
+                 CircularProgressIndicator(
+                 ),
+                 Container(
+                   padding: EdgeInsets.only(top: 30.0),
+                   child: Text(
+                     'Welcome',
+                     style: TextStyle(
+                       fontSize: 30,
+                       fontWeight: FontWeight.bold,
+                       color: Colors.blue[700],
+                     ),
+                   ),
+                 ),
+               ],
+             ),
+           )
           ],
         ),
       ),
     );
   }
+
 }

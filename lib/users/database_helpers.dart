@@ -6,20 +6,24 @@ import 'package:path_provider/path_provider.dart';
 
 final String users = 'users';
 final String username = 'username';
+final String email = 'email';
 final String password = 'password';
 final String userId ='_id';
 class User{
   String uname;
+  String uemail;
   String pword;
   int id;
   User();
   User.fromMap(Map<String, dynamic> map) {
     id = map [userId];
     uname = map[username];
+    uemail = map[email];
     pword = map[password];
   }
   Map<String, dynamic > toMap(){
     var map = <String, dynamic>{
+      email :uemail,
         username:uname,
         password : pword
     };
@@ -51,6 +55,7 @@ class DatabaseHelper{
     await db.execute(''' 
     CREATE TABLE ${users} (
     ${userId} INTEGER PRIMARY KEY,
+    ${email} TEXT NOT NULL, 
     ${username} TEXT NOT NULL,
     ${password} TEXT NOT NULL
     ) ''');
@@ -61,12 +66,12 @@ class DatabaseHelper{
     return id;
   }
 
-  Future<User> queryUser(String userName) async{
+  Future<User> queryUser(String userEmail) async{
     Database db = await database;
     List<Map> maps = await db.query(users,
-        columns: [userId,username,password],
-        where: '${username} = ?',
-        whereArgs : [userName]
+        columns: [userId,email,username,password],
+        where: '${email} = ?',
+        whereArgs : [userEmail]
     );
     if(maps.length > 0){
       return User.fromMap(maps.first);
