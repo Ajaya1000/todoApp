@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:mydairy/users/database_helpers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
 //  final String title;
@@ -41,6 +42,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       ).show();
     }
     else{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('logstate', true);
+      prefs.setString('useremail', temp.uemail);
+      prefs.setString('username', temp.uname);
       Navigator.of(context).pushNamedAndRemoveUntil('/HomePage',(r)=> false);
     }
   }

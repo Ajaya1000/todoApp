@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:mydairy/loginpages/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:mydairy/transitions/slideright.dart';
 
 import 'components/homepage.dart';
@@ -16,10 +17,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.blueAccent[900],
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        accentColor: Colors.blue[900],
+        primaryColor: Colors.black,
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark,
+        accentColor: Colors.white,
       ),
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
@@ -44,30 +45,36 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     var _duration =  Duration(seconds: 4);
     return Timer(_duration, navigationPage);
   }
-  void navigationPage() {
-    Navigator.of(context).pushReplacement(_createRoute());
-  }
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => next(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
+ void navigationPage() async {
+   // Navigator.of(context).pushReplacement(_createRoute());
+   String next;
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   next = '/HomePage';
+//   if(prefs.containsKey('logstate') && prefs.getBool('logstate')){
+//       next = '/HomePage';
+//   }
+//   else
+//    next='/LoginPage';
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
+  await  Navigator.of(context).pushReplacementNamed(next);
   }
-  Widget next(){
-      return LoginPage();
-  }
-  //init state
+//  Route _createRoute() {
+//    return PageRouteBuilder(
+//      pageBuilder: (context, animation, secondaryAnimation) => next(),
+//      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+//        var begin = Offset(0.0, 1.0);
+//        var end = Offset.zero;
+//        var curve = Curves.ease;
+//
+//        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+//
+//        return SlideTransition(
+//          position: animation.drive(tween),
+//          child: child,
+//        );
+//      },
+//    );
+//  }
 
   @override
   void initState(){
